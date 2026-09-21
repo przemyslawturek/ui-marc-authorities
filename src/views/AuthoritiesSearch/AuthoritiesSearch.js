@@ -37,7 +37,6 @@ import {
   Checkbox,
   PaneMenu,
   HasCommand,
-  checkScope,
   dayjs,
 } from '@folio/stripes/components';
 import {
@@ -680,6 +679,13 @@ const AuthoritiesSearch = ({
       </TextLink>
     );
   };
+
+  const checkScope = () => {
+    const ignoreElements = ['TEXTAREA', 'INPUT'];
+
+    return !ignoreElements.includes(document.activeElement.tagName);
+  };
+
 
   return (
     <HasCommand

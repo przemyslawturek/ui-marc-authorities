@@ -30,6 +30,16 @@ import {
 const mockHistoryPush = jest.fn();
 const mockSetSelectedAuthorityRecordContext = jest.fn();
 
+let mockCapturedIsWithinScope;
+
+jest.mock('@folio/stripes/components', () => ({
+  ...jest.requireActual('@folio/stripes/components'),
+  HasCommand: jest.fn(({ children, isWithinScope }) => {
+    mockCapturedIsWithinScope = isWithinScope;
+    return children;
+  }),
+}));
+
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useHistory: () => ({
@@ -609,5 +619,58 @@ describe('Given AuthoritiesSearch', () => {
     };
 
     expect(SearchResultsList).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+  });
+
+  describe('checkScope (isWithinScope passed to HasCommand)', () => {
+    let focusedElement;
+
+    const focusNewElement = (tagName) => {
+      focusedElement = document.createElement(tagName);
+
+      document.body.appendChild(focusedElement);
+      focusedElement.focus();
+
+      return focusedElement;
+    };
+
+    beforeEach(() => {
+      mockCapturedIsWithinScope = undefined;
+      focusedElement = undefined;
+      renderAuthoritiesSearch();
+    });
+
+    afterEach(() => {
+      if (focusedElement) {
+        focusedElement.remove();
+      }
+    });
+
+    it('should pass an isWithinScope function to HasCommand', () => {
+      expect(mockCapturedIsWithinScope).toEqual(expect.any(Function));
+    });
+
+    it('should return false when focus is on a TEXTAREA', () => {
+      focusNewElement('textarea');
+
+      expect(mockCapturedIsWithinScope()).toBe(false);
+    });
+
+    it('should return false when focus is on an INPUT', () => {
+      focusNewElement('input');
+
+      expect(mockCapturedIsWithinScope()).toBe(false);
+    });
+
+    it('should return true when focus is on a non-input element (e.g. a button)', () => {
+      focusNewElement('button');
+
+      expect(mockCapturedIsWithinScope()).toBe(true);
+    });
+
+    it('should return true when nothing specific is focused (document.body)', () => {
+      document.body.focus();
+
+      expect(mockCapturedIsWithinScope()).toBe(true);
+    });
   });
 });

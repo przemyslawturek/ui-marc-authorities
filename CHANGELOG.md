@@ -3,6 +3,7 @@
 ## [8.1.0] (IN PROGRESS)
 
 - [UIMARCAUTH-521](https://issues.folio.org/browse/UIMARCAUTH-521) Add a  aria-label for the Results List and Detail Record "Actions" buttons.
+- [UIMARCAUTH-555](https://folio-org.atlassian.net/browse/UIMARCAUTH-555) Fix to input polish diacritics in serach box.
 
 ## [8.0.2] (https://github.com/folio-org/ui-marc-authorities/tree/v8.0.2) (2026-06-04)
 
